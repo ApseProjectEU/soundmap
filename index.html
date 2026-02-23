@@ -293,6 +293,11 @@
     background: rgba(15,23,42,0.98);
   }
 
+  /* Marker glow per visibilità */
+  .leaflet-interactive {
+    filter: drop-shadow(0 0 6px currentColor);
+  }
+
   .popup-title {
     font-size: 14px;
     font-weight: 600;
@@ -566,9 +571,9 @@ function addMarkers() {
         const encodedFilename = encodeURIComponent(filename);
         const audioUrl = BASE + location.path + encodedFilename;
 
-        // Crea marker circolare
+        // Crea marker circolare - PIÙ GRANDE per visibilità
         const marker = L.circleMarker([lat, lng], {
-          radius: 9,
+          radius: 10,  // Aumentato da 9 a 10
           color: colors[category],
           fillColor: colors[category],
           fillOpacity: 0.85,
@@ -593,9 +598,12 @@ function addMarkers() {
     }
   }
 
-  // Fit map to show all markers
+  // Fit map to show all markers - PANORAMIC VIEW per mostrare tutti i cluster
   if (bounds.length) {
-    map.fitBounds(bounds, { padding: [50, 50] });
+    map.fitBounds(bounds, { 
+      padding: [80, 80],
+      maxZoom: 6  // Limita zoom per vista panoramica Europa
+    });
   }
 }
 
