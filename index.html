@@ -169,10 +169,7 @@
 <script>
 /* MAP SETUP */
 const map = L.map('map', {
-  zoomControl: false,
-  scrollWheelZoom: false,
-  doubleClickZoom: false,
-  touchZoom: false
+  zoomControl: false
 });
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -183,9 +180,10 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 document.getElementById("zoom-in").onclick = () => map.zoomIn();
 document.getElementById("zoom-out").onclick = () => map.zoomOut();
 
-/* AUDIO DATA */
-const base = "https://raw.githubusercontent.com/ApseProjectEU/soundmap/main/soundmap/sounds/";
+/* AUDIO DATA — BASE PATH CORRETTO */
+const base = "https://raw.githubusercontent.com/ApseProjectEU/soundmap/main/sounds/";
 
+/* TUTTI I FILE AUDIO */
 const data = {
   lamadeipeligni: {
     coords: [42.083, 14.183],
@@ -308,8 +306,8 @@ function addMarkers() {
     const p = data[place];
     const basePath = base + place + "/";
 
-    for (const cat of ["biophony", "geophony", "anthropophony"]) {
-      p[cat].forEach((file, i) => {
+    ["biophony", "geophony", "anthropophony"].forEach(cat => {
+      p[cat].forEach(file => {
         const lat = p.coords[0] + (Math.random() - 0.5) * 0.01;
         const lng = p.coords[1] + (Math.random() - 0.5) * 0.01;
 
@@ -330,10 +328,10 @@ function addMarkers() {
         marker.addTo(groups[cat]);
         bounds.push([lat, lng]);
       });
-    }
+    });
   }
 
-  map.fitBounds(bounds);
+  if (bounds.length) map.fitBounds(bounds);
 }
 
 addMarkers();
