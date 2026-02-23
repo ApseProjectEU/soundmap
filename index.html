@@ -389,9 +389,76 @@
             font-size: 0.9rem;
         }
 
-        .popup-content audio {
+        /* Audio player styles */
+        .audio-player {
             width: 100%;
-            margin-top: 0.5rem;
+            margin-top: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .audio-controls {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            align-items: center;
+        }
+
+        .audio-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .audio-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .audio-btn:active {
+            transform: translateY(0);
+        }
+
+        .audio-progress-container {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .audio-progress {
+            flex: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .audio-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .audio-time {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.7);
+            white-space: nowrap;
+            min-width: 45px;
+            text-align: right;
+        }
+
+        .popup-content audio {
+            display: none;
         }
 
         .category-badge {
@@ -557,8 +624,15 @@
         }
         createParticles();
 
-        // Initialize map
-        const map = L.map('map').setView([40.0, 20.0], 6);
+        // Initialize map with zoom controls disabled
+        const map = L.map('map', {
+            zoomControl: false,
+            doubleClickZoom: false,
+            scrollWheelZoom: false,
+            touchZoom: false,
+            boxZoom: false,
+            keyboard: false
+        }).setView([40.0, 20.0], 6);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
@@ -600,8 +674,133 @@
         `;
         document.head.appendChild(style);
 
+        // Audio player manager
+        const audioManager = {
+            currentAudio: null,
+            currentControls: null,
+
+            createPlayer(audioUrl) {
+                // Stop and cleanup previous audio
+                if (this.currentAudio) {
+                    this.currentAudio.pause();
+                    this.currentAudio = null;
+                }
+
+                const audio = new Audio();
+                audio.src = audioUrl;
+                audio.preload = 'metadata';
+                audio.crossOrigin = 'anonymous';
+
+                this.currentAudio = audio;
+                return audio;
+            },
+
+            createPlayerHTML(audioUrl) {
+                const playerId = 'audio-' + Date.now();
+
+                return `
+                    <div class="audio-player">
+                        <div class="audio-controls">
+                            <button class="audio-btn" data-action="play" data-player="${playerId}">▶ Play</button>
+                            <button class="audio-btn" data-action="pause" data-player="${playerId}">⏸ Pause</button>
+                            <button class="audio-btn" data-action="stop" data-player="${playerId}">⏹ Stop</button>
+                        </div>
+                        <div class="audio-progress-container">
+                            <div class="audio-progress" data-player="${playerId}">
+                                <div class="audio-progress-bar"></div>
+                            </div>
+                            <div class="audio-time" data-player="${playerId}">0:00</div>
+                        </div>
+                        <audio id="${playerId}" data-url="${audioUrl}" preload="metadata" crossorigin="anonymous"></audio>
+                    </div>
+                `;
+            }
+        };
+
         // Load and display locations
         let allMarkers = [];
+        const audioPlayers = {};
+
+        function formatTime(seconds) {
+            if (!seconds || isNaN(seconds)) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function setupAudioControls(playerId, audioUrl) {
+            const audioElement = document.getElementById(playerId);
+            if (!audioElement) return;
+
+            audioElement.addEventListener('loadedmetadata', () => {
+                const timeDisplay = document.querySelector(`[data-player="${playerId}"]`);
+                if (timeDisplay) {
+                    timeDisplay.textContent = `0:00 / ${formatTime(audioElement.duration)}`;
+                }
+            });
+
+            audioElement.addEventListener('timeupdate', () => {
+                const progressBar = document.querySelector(`[data-player="${playerId}"] .audio-progress-bar`);
+                const timeDisplay = document.querySelector(`[data-player="${playerId}"]`);
+                if (progressBar && audioElement.duration) {
+                    progressBar.style.width = (audioElement.currentTime / audioElement.duration) * 100 + '%';
+                    if (timeDisplay) {
+                        timeDisplay.textContent = `${formatTime(audioElement.currentTime)} / ${formatTime(audioElement.duration)}`;
+                    }
+                }
+            });
+
+            audioElement.addEventListener('ended', () => {
+                const playBtn = document.querySelector(`[data-player="${playerId}"][data-action="play"]`);
+                if (playBtn) {
+                    playBtn.textContent = '▶ Play';
+                }
+            });
+
+            // Setup click handlers for buttons
+            const playBtn = document.querySelector(`[data-player="${playerId}"][data-action="play"]`);
+            const pauseBtn = document.querySelector(`[data-player="${playerId}"][data-action="pause"]`);
+            const stopBtn = document.querySelector(`[data-player="${playerId}"][data-action="stop"]`);
+            const progressBar = document.querySelector(`[data-player="${playerId}"] .audio-progress`);
+
+            if (playBtn) {
+                playBtn.addEventListener('click', () => {
+                    if (!audioElement.src) {
+                        audioElement.src = audioUrl;
+                    }
+                    audioElement.play().catch(err => console.log('Play error:', err));
+                    playBtn.textContent = '▶ Playing...';
+                });
+            }
+
+            if (pauseBtn) {
+                pauseBtn.addEventListener('click', () => {
+                    audioElement.pause();
+                });
+            }
+
+            if (stopBtn) {
+                stopBtn.addEventListener('click', () => {
+                    audioElement.pause();
+                    audioElement.currentTime = 0;
+                    const pb = document.querySelector(`[data-player="${playerId}"] .audio-progress-bar`);
+                    if (pb) pb.style.width = '0%';
+                    if (playBtn) playBtn.textContent = '▶ Play';
+                });
+            }
+
+            if (progressBar) {
+                progressBar.addEventListener('click', (e) => {
+                    const rect = progressBar.getBoundingClientRect();
+                    const percent = (e.clientX - rect.left) / rect.width;
+                    if (audioElement.duration) {
+                        audioElement.currentTime = percent * audioElement.duration;
+                    }
+                });
+            }
+
+            audioPlayers[playerId] = audioElement;
+        }
 
         fetch('locations.json')
             .then(response => response.json())
@@ -613,21 +812,42 @@
 
                     const categoryLabel = location.category.charAt(0).toUpperCase() + location.category.slice(1);
 
+                    const playerHTML = audioManager.createPlayerHTML(location.audioUrl);
+
                     const popupContent = `
                         <div class="popup-content">
                             <span class="category-badge ${location.category}">${categoryLabel}</span>
                             <h3>${location.title}</h3>
                             <p>${location.description}</p>
-                            <audio controls>
-                                <source src="${location.audioUrl}" type="audio/mpeg">
-                                Your browser does not support the audio element.
-                            </audio>
+                            ${playerHTML}
                         </div>
                     `;
 
-                    marker.bindPopup(popupContent, {
-                        maxWidth: 300,
+                    const popup = L.popup({
+                        maxWidth: 350,
                         className: 'custom-popup'
+                    }).setContent(popupContent);
+
+                    marker.bindPopup(popup);
+
+                    marker.on('popupopen', () => {
+                        setTimeout(() => {
+                            const playerHTML = document.querySelector('.audio-player');
+                            if (playerHTML) {
+                                const playerId = playerHTML.querySelector('audio').id;
+                                setupAudioControls(playerId, location.audioUrl);
+                            }
+                        }, 100);
+                    });
+
+                    marker.on('popupclose', () => {
+                        // Stop audio when popup closes
+                        Object.values(audioPlayers).forEach(audio => {
+                            if (audio) {
+                                audio.pause();
+                                audio.currentTime = 0;
+                            }
+                        });
                     });
 
                     allMarkers.push({ marker, category: location.category });
@@ -700,26 +920,48 @@
 
             const categoryLabel = newLocation.category.charAt(0).toUpperCase() + newLocation.category.slice(1);
 
+            const playerHTML = audioManager.createPlayerHTML(newLocation.audioUrl);
+
             const popupContent = `
                 <div class="popup-content">
                     <span class="category-badge ${newLocation.category}">${categoryLabel}</span>
                     <h3>${newLocation.title}</h3>
                     <p>${newLocation.description}</p>
-                    <audio controls>
-                        <source src="${newLocation.audioUrl}" type="audio/mpeg">
-                        Your browser does not support the audio element.
-                    </audio>
+                    ${playerHTML}
                 </div>
             `;
 
-            marker.bindPopup(popupContent, {
-                maxWidth: 300,
+            const popup = L.popup({
+                maxWidth: 350,
                 className: 'custom-popup'
-            }).openPopup();
+            }).setContent(popupContent);
+
+            marker.bindPopup(popup);
+
+            marker.on('popupopen', () => {
+                setTimeout(() => {
+                    const playerHTML = document.querySelector('.audio-player');
+                    if (playerHTML) {
+                        const playerId = playerHTML.querySelector('audio').id;
+                        setupAudioControls(playerId, newLocation.audioUrl);
+                    }
+                }, 100);
+            });
+
+            marker.on('popupclose', () => {
+                Object.values(audioPlayers).forEach(audio => {
+                    if (audio) {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    }
+                });
+            });
+
+            marker.openPopup();
 
             allMarkers.push({ marker, category: newLocation.category });
 
-            map.setView([newLocation.lat, newLocation.lng], 12);
+            map.setView([newLocation.lat, newLocation.lng], 6);
 
             modal.classList.remove('active');
             this.reset();

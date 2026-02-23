@@ -5,7 +5,7 @@
     "lng": 22.481,
     "category": "biophony",
     "description": "Fir forest sounds from elevated platform in May",
-    "audioUrl": "sounds/forest-demo.mp3",
+    "audioUrl": "sounds/larissa/biophony/forest-demo.mp3",
     "imageUrl": "images/kato-olympos.jpg"
   },
   {
@@ -14,7 +14,7 @@
     "lng": 21.670,
     "category": "anthropophony",
     "description": "Winter soundscape with domestic rooster calls",
-    "audioUrl": "sounds/rooster.mp3",
+    "audioUrl": "sounds/larissa/biophony/rooster.mp3",
     "imageUrl": "images/pertouli.jpg"
   },
   {
@@ -23,7 +23,7 @@
     "lng": 0.181256,
     "category": "anthropophony",
     "description": "Traffic and vehicle sounds on coastal road",
-    "audioUrl": "sounds/road.mp3",
+    "audioUrl": "sounds/larissa/biophony/road.mp3",
     "imageUrl": "images/carretera.jpg"
   },
   {
@@ -32,7 +32,7 @@
     "lng": 0.217320,
     "category": "geophony",
     "description": "Mediterranean summer sea waves",
-    "audioUrl": "sounds/sea_waves.mp3",
+    "audioUrl": "sounds/larissa/biophony/sea_waves.mp3",
     "imageUrl": "images/cabo.jpg"
   },
   {
@@ -41,7 +41,7 @@
     "lng": 0.129729,
     "category": "anthropophony",
     "description": "Mountain soundscape with human activity",
-    "audioUrl": "sounds/montgo.mp3",
+    "audioUrl": "sounds/larissa/biophony/montgo.mp3",
     "imageUrl": "images/montgo.jpg"
   },
   {
@@ -50,7 +50,7 @@
     "lng": 22.416073,
     "category": "anthropophony",
     "description": "Urban pedestrian square ambience",
-    "audioUrl": "sounds/parks.mp3",
+    "audioUrl": "sounds/larissa/biophony/parks.mp3",
     "imageUrl": "images/square.jpg"
   },
   {
@@ -59,7 +59,7 @@
     "lng": 21.366864183764626,
     "category": "anthropophony",
     "description": "Traditional Greek village festival celebration",
-    "audioUrl": "sounds/panigiri.mp3",
+    "audioUrl": "sounds/larissa/biophony/panigiri.mp3",
     "imageUrl": "images/neapefki.jpg"
   },
   {
@@ -68,7 +68,7 @@
     "lng": 22.42217,
     "category": "geophony",
     "description": "Mountain waterfall cascading sounds",
-    "audioUrl": "sounds/waterfall.mp3",
+    "audioUrl": "sounds/larissa/biophony/waterfall.mp3",
     "imageUrl": "images/enipeas.jpg"
   },
   {
@@ -77,7 +77,7 @@
     "lng": 22.88311,
     "category": "biophony",
     "description": "Midday cicada chorus in summer heat",
-    "audioUrl": "sounds/cicadas.mp3",
+    "audioUrl": "sounds/larissa/biophony/cicadas.mp3",
     "imageUrl": "images/agiokampos.jpg"
   },
   {
@@ -86,7 +86,7 @@
     "lng": 23.169815,
     "category": "anthropophony",
     "description": "Coastal village with sea and human activity",
-    "audioUrl": "sounds/papanerosounds.mp3",
+    "audioUrl": "sounds/larissa/biophony/papanerosounds.mp3",
     "imageUrl": "images/PapaNero.jpg"
   },
   {
@@ -95,7 +95,7 @@
     "lng": 14.188414423228808,
     "category": "anthropophony",
     "description": "Piazza Umberto I village square ambience",
-    "audioUrl": "sounds/Lama_dei_Peligni.mp3",
+    "audioUrl": "sounds/larissa/biophony/Lama_dei_Peligni.mp3",
     "imageUrl": "images/Lama.jpg"
   },
   {
@@ -104,7 +104,7 @@
     "lng": 14.188603518968804,
     "category": "anthropophony",
     "description": "Public fountain water flow in village center",
-    "audioUrl": "sounds/smallfountain.mp3",
+    "audioUrl": "sounds/larissa/biophony/smallfountain.mp3",
     "imageUrl": "images/fontecannella.jpg"
   },
   {
@@ -113,7 +113,7 @@
     "lng": 22.398480642374643,
     "category": "biophony",
     "description": "Morning cicadas with urban birds chorus",
-    "audioUrl": "sounds/urbancicades.mp3",
+    "audioUrl": "sounds/larissa/biophony/urbancicades.mp3",
     "imageUrl": "images/Larisa.jpeg"
   },
   {
@@ -122,7 +122,7 @@
     "lng": 22.950445,
     "category": "anthropophony",
     "description": "Harbor boat sounds and maritime activity",
-    "audioUrl": "sounds/boat1.mp3",
+    "audioUrl": "sounds/larissa/biophony/boat1.mp3",
     "imageUrl": "images/volos.jpg"
   },
   {
@@ -131,7 +131,7 @@
     "lng": 83.78482652990989,
     "category": "geophony",
     "description": "Seismic geological event recording",
-    "audioUrl": "sounds/nepalearthquakesound.mp3",
+    "audioUrl": "sounds/larissa/biophony/nepalearthquakesound.mp3",
     "imageUrl": "images/nepalearthquake.jpg"
   },
   {
@@ -140,7 +140,7 @@
     "lng": 22.95392273828219,
     "category": "biophony",
     "description": "Pigeon calls in urban environment",
-    "audioUrl": "sounds/Pigeon.mp3",
+    "audioUrl": "sounds/larissa/biophony/Pigeon.mp3",
     "imageUrl": "images/pigeonskg.jpg"
   },
   {
@@ -329,7 +329,7 @@
     "lng": -0.0738,
     "category": "geophony",
     "description": "Flowing river sounds on western bank",
-    "audioUrl": "sounds/almazora/geophony/mijares-riverbank.mp3",
+    "audioUrl": "sounds/almazora/3%20Soundscape%20Wind%20Through%20The%20Wheat%20-%20Clovis%20Tisserand.mp3",
     "imageUrl": "images/almazora-river.jpg"
   },
   {
@@ -338,7 +338,7 @@
     "lng": -0.0679,
     "category": "geophony",
     "description": "Water currents at river crossing point",
-    "audioUrl": "sounds/almazora/geophony/mijares-crossing.mp3",
+    "audioUrl": "sounds/almazora/2%20Soundscape%20Wind%20Through%20The%20Cane%20-%20Clovis%20Tisserand.mp3",
     "imageUrl": "images/almazora-river.jpg"
   },
   {
@@ -347,7 +347,7 @@
     "lng": -0.0625,
     "category": "anthropophony",
     "description": "Historic religious site acoustic environment",
-    "audioUrl": "sounds/almazora/anthropophony/santa-quiteria.mp3",
+    "audioUrl": "sounds/almazora/anthropophony/BandCampDownloader.app%20-%20soundscape%20-%20CRICKETS%20IN%20THE%20NORTH%20OF%20GREECE%20-%20Clovis%20Tisserand.mp3",
     "imageUrl": "images/almazora-hermitage.jpg"
   },
   {
@@ -356,7 +356,7 @@
     "lng": -0.0647,
     "category": "anthropophony",
     "description": "Main town square with urban activity",
-    "audioUrl": "sounds/almazora/anthropophony/plaza-mayor.mp3",
+    "audioUrl": "sounds/almazora/anthropophony/2%20Soundscape%20Wind%20Through%20The%20Cane%20-%20Clovis%20Tisserand.mp3",
     "imageUrl": "images/almazora-plaza.jpg"
   },
   {
@@ -365,7 +365,7 @@
     "lng": -0.0609,
     "category": "biophony",
     "description": "Urban park with natural bird songs",
-    "audioUrl": "sounds/almazora/biophony/parc-darremur.mp3",
+    "audioUrl": "sounds/almazora/BandCampDownloader.app%20-%20soundscape%20-%20CRICKETS%20IN%20THE%20NORTH%20OF%20GREECE%20-%20Clovis%20Tisserand.mp3",
     "imageUrl": "images/almazora-park.jpg"
   },
   {
@@ -374,7 +374,7 @@
     "lng": -0.0588,
     "category": "biophony",
     "description": "Green park space with vegetation sounds",
-    "audioUrl": "sounds/almazora/biophony/parc-pitillo.mp3",
+    "audioUrl": "sounds/almazora/3%20Soundscape%20Wind%20Through%20The%20Wheat%20-%20Clovis%20Tisserand.mp3",
     "imageUrl": "images/almazora-park.jpg"
   },
   {
@@ -383,7 +383,7 @@
     "lng": -0.0661,
     "category": "anthropophony",
     "description": "Community garden with mixed human activity",
-    "audioUrl": "sounds/almazora/anthropophony/urban-garden.mp3",
+    "audioUrl": "sounds/almazora/anthropophony/3%20Soundscape%20Wind%20Through%20The%20Wheat%20-%20Clovis%20Tisserand.mp3",
     "imageUrl": "images/almazora-garden.jpg"
   },
   {
@@ -392,7 +392,7 @@
     "lng": -0.0499,
     "category": "geophony",
     "description": "Mediterranean coast with wave sounds",
-    "audioUrl": "sounds/almazora/geophony/beach-promenade.mp3",
+    "audioUrl": "sounds/almazora/Valencia%20Ruzafa%20%28Russafa%29%20%20Real%20City%20Sounds%204K%20Walk%20-%20No%20Music.mp3",
     "imageUrl": "images/almazora-beach.jpg"
   },
   {
@@ -401,7 +401,7 @@
     "lng": -0.0472,
     "category": "geophony",
     "description": "Coastal beach with rhythmic wave patterns",
-    "audioUrl": "sounds/almazora/geophony/ben-afeli.mp3",
+    "audioUrl": "sounds/almazora/2%20Soundscape%20Wind%20Through%20The%20Cane%20-%20Clovis%20Tisserand.mp3",
     "imageUrl": "images/almazora-beach.jpg"
   },
   {
@@ -410,7 +410,7 @@
     "lng": -0.0518,
     "category": "geophony",
     "description": "Natural dunes with wind and sea sounds",
-    "audioUrl": "sounds/almazora/geophony/coastal-dunes.mp3",
+    "audioUrl": "sounds/almazora/3%20Soundscape%20Wind%20Through%20The%20Wheat%20-%20Clovis%20Tisserand.mp3",
     "imageUrl": "images/almazora-dunes.jpg"
   }
 ]
