@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>APSE Soundmap</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<style>
+  #map { height: 100vh; width: 100%; }
+
+  .legend {
+    background: white;
+    padding: 10px;
+    line-height: 18px;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  .legend i {
+    width: 14px;
+    height: 22px;
+    float: left;
+    margin-right: 8px;
+    opacity: 1;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+</style>
+</head>
+
+<body>
+
+<div id="map"></div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+/* -------------------------------------------------------
+   BASE MAP
+------------------------------------------------------- */
+const map = L.map('map').setView([42.1, 14.2], 5);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19
+}).addTo(map);
+
+/* -------------------------------------------------------
+   MARKER ICONS (Leaflet-style colored drops)
+------------------------------------------------------- */
+function coloredIcon(color) {
+  return new L.Icon({
+    iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
+    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
+}
+
+const icons = {
+  biophony: coloredIcon("green"),
+  anthropophony: coloredIcon("red"),
+  geophony: coloredIcon("blue")
+};
+
+/* -------------------------------------------------------
+   LOCALITÀ + FILE AUDIO
+   (i nomi file NON compaiono mai nei popup)
+------------------------------------------------------- */
+const data = {
+  lamadeipeligni: {
+    center: [42.083, 14.183],
+    radius: 0.004,
+    category: "biophony",
+    files: [
+      "barn-swallow.mp3",
+      "buzzards-crows-pine-forest.mp3",
+      "common-buzzard.mp3",
+      "common-chaffinch.mp3",
+      "common-kestrel.mp3",
+      "common-raven.mp3",
+      "common-redstart.mp3",
+      "dalmatian-woodpecker.mp3",
+      "eurasian-blackcap.mp3",
+      "eurasian-treecreeper.mp3",
+      "european-robin.mp3",
+      "goldcrest.mp3",
+      "golden-eagle.mp3",
+      "great-tit.mp3",
+      "hifi-soundscape-lama.mp3",
+      "house-martin.mp3",
+      "peregrine-falcon.mp3",
+      "red-deer-roaring.mp3",
+      "river-forest-binaural.mp3",
+      "tree-frogs-river.mp3"
+    ],
+    path: "sounds/lamadeipeligni/biophony/"
+  },
+
+  larissa: {
+    center: [39.639, 22.419],
+    radius: 0.004,
+    category: "biophony",
+    files: [
+      "11_canary-doorbell-72375.mp3",
+      "13_nightingale-birds-spring-339975.mp3",
+      "15_croaking-frogs.mp3",
+      "1_bees-54954.mp3",
+      "3_cicada-126650.mp3",
+      "AUDIO-2025-03-16-18-43-33.aac",
+      "AUDIO-2025-03-16-18-44-45.aac",
+      "AUDIO-2025-03-17-13-00-09.aac"
+    ],
+    path: "sounds/larissa/biophony/"
+  },
+
+  almazora: {
+    center: [39.938, -0.065],
+    radius: 0.004,
+    category: "anthropophony",
+    files: [
+      "2 Soundscape Wind Through The Cane - Clovis Tisserand.mp3",
+      "3 Soundscape Wind Through The Wheat - Clovis Tisserand.mp3",
+      "BandCampDownloader.app - soundscape - CRICKETS IN.mp3"
+    ],
+    path: "sounds/almazora/anthropophony/"
+  }
+};
+
+/* -------------------------------------------------------
+   FUNZIONE PER GENERARE COORDINATE RANDOM
+------------------------------------------------------- */
+function randomOffset(radius) {
+  return (Math.random() - 0.5) * radius * 2;
+}
+
+/* -------------------------------------------------------
+   GENERAZIONE MARKER
+------------------------------------------------------- */
+Object.keys(data).forEach(place => {
+  const loc = data[place];
+
+  loc.files.forEach(file => {
+    const lat = loc.center[0] + randomOffset(loc.radius);
+    const lng = loc.center[1] + randomOffset(loc.radius);
+
+    const rawURL =
+      "https://raw.githubusercontent.com/ApseProjectEU/soundmap/main/" +
+      loc.path +
+      encodeURIComponent(file);
+
+    L.marker([lat, lng], { icon: icons[loc.category] })
+      .addTo(map)
+      .bindPopup(`<audio controls src="${rawURL}" style="width:200px;"></audio>`);
+  });
+});
+
+/* -------------------------------------------------------
+   LEGENDA
+------------------------------------------------------- */
+const legend = L.control({ position: "bottomright" });
+
+legend.onAdd = function () {
+  const div = L.DomUtil.create("div", "legend");
+  div.innerHTML = `
+    <b>Sound Categories</b><br>
+    <i style="background-image:url('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png')"></i> Biophony<br>
+    <i style="background-image:url('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png')"></i> Anthropophony<br>
+    <i style="background-image:url('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png')"></i> Geophony
+  `;
+  return div;
+};
+
+legend.addTo(map);
+</script>
+
+</body>
+</html>
