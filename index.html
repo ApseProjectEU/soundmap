@@ -2,90 +2,194 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>APSE Soundmap</title>
+<title>APSE Sound Map – Interactive Soundscape Explorer</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
 
 <style>
-  #map { height: 100vh; width: 100%; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    font-family: system-ui, sans-serif;
+    background: #0b0f19;
+    color: #f8fafc;
+    overflow: hidden;
+  }
 
-  .legend {
-    background: white;
-    padding: 10px;
-    line-height: 18px;
-    border-radius: 4px;
+  #map {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 1;
+  }
+
+  /* Sidebar */
+  #sidebar {
+    position: absolute;
+    top: 16px; left: 16px; bottom: 16px;
+    width: 320px;
+    padding: 18px;
+    border-radius: 16px;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(22px);
+    border: 1px solid rgba(148,163,184,0.5);
+    box-shadow: 0 18px 45px rgba(0,0,0,0.55);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #sidebar h2 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  #sidebar h3 {
+    margin: 14px 0 6px;
     font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
-  .legend i {
-    width: 14px;
-    height: 22px;
-    float: left;
-    margin-right: 8px;
-    opacity: 1;
-    background-size: contain;
-    background-repeat: no-repeat;
+
+  .category-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px;
+    margin-bottom: 6px;
+    border-radius: 10px;
+    background: rgba(15,23,42,0.85);
+    border: 1px solid rgba(55,65,81,0.9);
   }
+
+  .category-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .bio { background: #22c55e; }
+  .geo { background: #3b82f6; }
+  .anthro { background: #f97316; }
+
+  .toggle {
+    width: 34px; height: 18px;
+    border-radius: 999px;
+    background: rgba(31,41,55,0.9);
+    border: 1px solid rgba(75,85,99,0.9);
+    position: relative;
+    cursor: pointer;
+  }
+  .toggle .knob {
+    width: 12px; height: 12px;
+    background: #9ca3af;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px; left: 2px;
+    transition: 0.2s;
+  }
+  .toggle.active .knob {
+    left: 18px;
+    background: #22c55e;
+  }
+
+  /* Zoom bar */
+  #zoom-bar {
+    position: absolute;
+    top: 16px; right: 16px;
+    z-index: 1000;
+    display: flex;
+    gap: 6px;
+  }
+
+  .zoom-btn {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(148,163,184,0.7);
+    background: rgba(30,41,59,0.8);
+    color: #f8fafc;
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+
+  /* Popup */
+  .leaflet-popup-content-wrapper {
+    background: rgba(15,23,42,0.95);
+    border-radius: 14px;
+    border: 1px solid rgba(148,163,184,0.7);
+    color: #f8fafc;
+  }
+  .popup-title { font-size: 14px; font-weight: 600; }
+  .popup-meta { font-size: 11px; color: #9ca3af; }
+  audio { width: 100%; margin-top: 6px; }
 </style>
 </head>
 
 <body>
 
+<div id="sidebar">
+  <h2>APSE Sound Map</h2>
+  <p>Interactive Soundscape Explorer</p>
+
+  <h3>Sound Categories</h3>
+
+  <div class="category-row">
+    <div class="category-label"><div class="dot bio"></div>Biophony</div>
+    <div class="toggle active" data-cat="biophony"><div class="knob"></div></div>
+  </div>
+
+  <div class="category-row">
+    <div class="category-label"><div class="dot geo"></div>Geophony</div>
+    <div class="toggle active" data-cat="geophony"><div class="knob"></div></div>
+  </div>
+
+  <div class="category-row">
+    <div class="category-label"><div class="dot anthro"></div>Anthropophony</div>
+    <div class="toggle active" data-cat="anthropophony"><div class="knob"></div></div>
+  </div>
+</div>
+
+<div id="zoom-bar">
+  <div class="zoom-btn" id="zoom-in">+</div>
+  <div class="zoom-btn" id="zoom-out">−</div>
+</div>
+
 <div id="map"></div>
 
-<!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-/* -------------------------------------------------------
-   BASE MAP
-------------------------------------------------------- */
+/* MAP SETUP */
 const map = L.map('map', {
-  zoom: 5,
-  center: [42.1, 14.2],
   zoomControl: false,
-  doubleClickZoom: false,
   scrollWheelZoom: false,
-  touchZoom: false,
-  boxZoom: false,
-  keyboard: false
+  doubleClickZoom: false,
+  touchZoom: false
 });
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19
+  maxZoom: 18
 }).addTo(map);
 
-/* -------------------------------------------------------
-   MARKER ICONS (Leaflet-style colored drops)
-------------------------------------------------------- */
-function coloredIcon(color) {
-  return new L.Icon({
-    iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
-    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
-}
+/* CUSTOM ZOOM */
+document.getElementById("zoom-in").onclick = () => map.zoomIn();
+document.getElementById("zoom-out").onclick = () => map.zoomOut();
 
-const icons = {
-  biophony: coloredIcon("green"),
-  anthropophony: coloredIcon("red"),
-  geophony: coloredIcon("blue")
-};
+/* AUDIO DATA */
+const base = "https://raw.githubusercontent.com/ApseProjectEU/soundmap/main/soundmap/sounds/";
 
-/* -------------------------------------------------------
-   LOCALITÀ + FILE AUDIO
-   (i nomi file NON compaiono mai nei popup)
-------------------------------------------------------- */
 const data = {
   lamadeipeligni: {
-    center: [42.083, 14.183],
-    radius: 0.004,
-    category: "biophony",
-    files: [
+    coords: [42.083, 14.183],
+    biophony: [
       "barn-swallow.mp3",
       "buzzards-crows-pine-forest.mp3",
       "common-buzzard.mp3",
@@ -100,91 +204,149 @@ const data = {
       "goldcrest.mp3",
       "golden-eagle.mp3",
       "great-tit.mp3",
-      "hifi-soundscape-lama.mp3",
       "house-martin.mp3",
       "peregrine-falcon.mp3",
-      "red-deer-roaring.mp3",
-      "river-forest-binaural.mp3",
-      "tree-frogs-river.mp3"
+      "red-deer-roaring.mp3"
     ],
-    path: "sounds/lamadeipeligni/biophony/"
+    geophony: [
+      "hifi-soundscape-lama.mp3",
+      "river-forest-binaural.mp3",
+      "Campo aperto Fiume aventino.mp3",
+      "Vento a Fonte tarì.mp3"
+    ],
+    anthropophony: [
+      "Motosega ed albero che cade.mp3",
+      "Mercato Locale Lama dei Peligni.mp3",
+      "Piazza di Lama campana.mp3"
+    ]
   },
 
   larissa: {
-    center: [39.639, 22.419],
-    radius: 0.004,
-    category: "biophony",
-    files: [
+    coords: [39.639, 22.419],
+    biophony: [
       "11_canary-doorbell-72375.mp3",
       "13_nightingale-birds-spring-339975.mp3",
       "15_croaking-frogs.mp3",
       "1_bees-54954.mp3",
       "3_cicada-126650.mp3",
-      "AUDIO-2025-03-16-18-43-33.aac",
-      "AUDIO-2025-03-16-18-44-45.aac",
-      "AUDIO-2025-03-17-13-00-09.aac"
+      "cicadas.mp3",
+      "chamois-inner.mp3",
+      "chamois-lower.mp3",
+      "chamois-observation.mp3",
+      "Pigeon.mp3",
+      "rooster.mp3",
+      "papanerosounds.mp3"
     ],
-    path: "sounds/larissa/biophony/"
+    geophony: [
+      "river-soundscape.mp3",
+      "sea_waves.mp3",
+      "waterfall.mp3",
+      "montgo.mp3",
+      "forest-demo.mp3",
+      "forest-edge.mp3",
+      "forest-exit-east.mp3",
+      "forest-lower-clearing.mp3",
+      "forest-threshold.mp3",
+      "forest-west.mp3",
+      "pine-forest-inner.mp3",
+      "pine-forest-ridge.mp3",
+      "pine-forest-south.mp3",
+      "pine-forest-upper.mp3",
+      "nepalearthquakesound.mp3",
+      "smallfountain.mp3",
+      "valley-edge.mp3",
+      "valley-lower.mp3"
+    ],
+    anthropophony: [
+      "access-east.mp3",
+      "boat1.mp3",
+      "convent-courtyard.mp3",
+      "convent-lower.mp3",
+      "convent-viewpoint.mp3",
+      "panigiri.mp3",
+      "parks.mp3",
+      "road.mp3",
+      "urbancicades.mp3"
+    ]
   },
 
   almazora: {
-    center: [39.938, -0.065],
-    radius: 0.004,
-    category: "anthropophony",
-    files: [
-      "2 Soundscape Wind Through The Cane - Clovis Tisserand.mp3",
-      "3 Soundscape Wind Through The Wheat - Clovis Tisserand.mp3",
-      "BandCampDownloader.app - soundscape - CRICKETS IN.mp3"
+    coords: [39.938, -0.065],
+    biophony: [
+      "2 Murmuration - Irish Wildlife Sounds.mp3",
+      "AUDIO-2025-03-16-18-44-45.mp3",
+      "AUDIO-2025-03-17-13-00-09.mp3",
+      "BandCampDownloader.app - soundscape - CRICKETS IN THE NORTH OF GREECE - Clovis Tisserand.mp3",
+      "untitled-2021-2022-francisco-lópez.mp3"
     ],
-    path: "sounds/almazora/anthropophony/"
+    geophony: [
+      "almazora 12_wind 82kmh-desert.mp3",
+      "2 Soundscape Wind Through The Cane - Clovis Tisserand.mp3",
+      "3 Soundscape Wind Through The Wheat - Clovis Tisserand.mp3"
+    ],
+    anthropophony: [
+      "Almazora antropo .mp3",
+      "Valencia Ruzafa (Russafa) Real City Sounds 4K Walk - No Music.mp3",
+      "almazora antropo2.mp3",
+      "almazora antropofonia1.mp3",
+      "antropofo 3 almazora.mp3"
+    ]
   }
 };
 
-/* -------------------------------------------------------
-   FUNZIONE PER GENERARE COORDINATE RANDOM
-------------------------------------------------------- */
-function randomOffset(radius) {
-  return (Math.random() - 0.5) * radius * 2;
-}
-
-/* -------------------------------------------------------
-   GENERAZIONE MARKER
-------------------------------------------------------- */
-Object.keys(data).forEach(place => {
-  const loc = data[place];
-
-  loc.files.forEach(file => {
-    const lat = loc.center[0] + randomOffset(loc.radius);
-    const lng = loc.center[1] + randomOffset(loc.radius);
-
-    const rawURL =
-      "https://raw.githubusercontent.com/ApseProjectEU/soundmap/main/" +
-      loc.path +
-      encodeURIComponent(file);
-
-    L.marker([lat, lng], { icon: icons[loc.category] })
-      .addTo(map)
-      .bindPopup(`<audio controls crossorigin="anonymous" preload="metadata" src="${rawURL}" style="width:200px;"></audio>`);
-  });
-});
-
-/* -------------------------------------------------------
-   LEGENDA
-------------------------------------------------------- */
-const legend = L.control({ position: "bottomright" });
-
-legend.onAdd = function () {
-  const div = L.DomUtil.create("div", "legend");
-  div.innerHTML = `
-    <b>Sound Categories</b><br>
-    <i style="background-image:url('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png')"></i> Biophony<br>
-    <i style="background-image:url('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png')"></i> Anthropophony<br>
-    <i style="background-image:url('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png')"></i> Geophony
-  `;
-  return div;
+/* MARKERS */
+const groups = {
+  biophony: L.layerGroup().addTo(map),
+  geophony: L.layerGroup().addTo(map),
+  anthropophony: L.layerGroup().addTo(map)
 };
 
-legend.addTo(map);
+function addMarkers() {
+  const bounds = [];
+
+  for (const place in data) {
+    const p = data[place];
+    const basePath = base + place + "/";
+
+    for (const cat of ["biophony", "geophony", "anthropophony"]) {
+      p[cat].forEach((file, i) => {
+        const lat = p.coords[0] + (Math.random() - 0.5) * 0.01;
+        const lng = p.coords[1] + (Math.random() - 0.5) * 0.01;
+
+        const marker = L.circleMarker([lat, lng], {
+          radius: 8,
+          color: cat === "biophony" ? "#22c55e" :
+                 cat === "geophony" ? "#3b82f6" : "#f97316",
+          fillOpacity: 0.9
+        });
+
+        const popup = `
+          <div class="popup-title">${file}</div>
+          <div class="popup-meta">Category: ${cat}</div>
+          <audio controls src="${basePath + file}"></audio>
+        `;
+
+        marker.bindPopup(popup);
+        marker.addTo(groups[cat]);
+        bounds.push([lat, lng]);
+      });
+    }
+  }
+
+  map.fitBounds(bounds);
+}
+
+addMarkers();
+
+/* FILTERS */
+document.querySelectorAll(".toggle").forEach(t => {
+  t.onclick = () => {
+    t.classList.toggle("active");
+    const cat = t.dataset.cat;
+    if (t.classList.contains("active")) groups[cat].addTo(map);
+    else map.removeLayer(groups[cat]);
+  };
+});
 </script>
 
 </body>
