@@ -418,6 +418,39 @@
             color: white;
         }
 
+        /* Zone Zoom Buttons */
+        .zone-buttons {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .zone-btn {
+            padding: 0.6rem 1.2rem;
+            background: rgba(102, 126, 234, 0.3);
+            border: 1px solid rgba(102, 126, 234, 0.5);
+            border-radius: 20px;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .zone-btn:hover {
+            background: rgba(102, 126, 234, 0.6);
+            border-color: rgba(102, 126, 234, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .zone-btn:active {
+            transform: translateY(0);
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 2rem;
@@ -433,6 +466,15 @@
 
             .legend {
                 gap: 1rem;
+            }
+
+            .zone-buttons {
+                gap: 0.5rem;
+            }
+
+            .zone-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
             }
 
             .add-btn {
@@ -467,6 +509,14 @@
                 <span class="legend-dot"></span>
                 <span class="legend-label">Anthropophony (Human activity)</span>
             </div>
+        </div>
+
+        <!-- ZONE ZOOM BUTTONS -->
+        <div class="zone-buttons">
+            <button class="zone-btn" data-zone="greece">🇬🇷 Greece</button>
+            <button class="zone-btn" data-zone="italy">🇮🇹 Italy</button>
+            <button class="zone-btn" data-zone="spain">🇪🇸 Spain</button>
+            <button class="zone-btn" data-zone="all">🌍 All Zones</button>
         </div>
 
         <!-- Map -->
@@ -563,6 +613,43 @@
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
+
+        // Zone boundaries for quick zoom
+        const zones = {
+            greece: {
+                center: [39.5, 22.5],
+                zoom: 8,
+                bounds: [[38.5, 21.0], [40.8, 24.0]]
+            },
+            italy: {
+                center: [42.04, 14.18],
+                zoom: 10,
+                bounds: [[41.8, 13.8], [42.3, 14.6]]
+            },
+            spain: {
+                center: [39.3, -0.3],
+                zoom: 9,
+                bounds: [[38.5, -1.0], [40.0, 0.5]]
+            },
+            all: {
+                center: [40.0, 20.0],
+                zoom: 6
+            }
+        };
+
+        // Zone button functionality
+        document.querySelectorAll('.zone-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const zone = this.dataset.zone;
+                const zoneData = zones[zone];
+
+                if (zone === 'all') {
+                    map.setView(zoneData.center, zoneData.zoom);
+                } else {
+                    map.fitBounds(zoneData.bounds, { padding: [50, 50], maxZoom: zoneData.zoom });
+                }
+            });
+        });
 
         // MARKER COLORS BY CATEGORY
         const markerColors = {
