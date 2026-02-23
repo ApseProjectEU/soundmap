@@ -1,182 +1,731 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>APSE Soundmap</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APSE Sound Map - Ecological Soundscapes of Europe</title>
 
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-<style>
-  #map { height: 100vh; width: 100%; }
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-  .legend {
-    background: white;
-    padding: 10px;
-    line-height: 18px;
-    border-radius: 4px;
-    font-size: 14px;
-  }
-  .legend i {
-    width: 14px;
-    height: 22px;
-    float: left;
-    margin-right: 8px;
-    opacity: 1;
-    background-size: contain;
-    background-repeat: no-repeat;
-  }
-</style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --biophony: #10b981;
+            --geophony: #3b82f6;
+            --anthropophony: #f59e0b;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #312e81 50%, #1e293b 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        /* Animated particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+        }
+
+        header {
+            text-align: center;
+            padding: 3rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(167, 139, 250, 0.3)); }
+            50% { filter: drop-shadow(0 0 40px rgba(167, 139, 250, 0.6)); }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem 3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Glassmorphism card */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* LEGEND - ENGLISH */
+        .legend {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .legend-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .legend-item.active {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+        }
+
+        .legend-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        .legend-item.biophony .legend-dot {
+            background: var(--biophony);
+            color: var(--biophony);
+        }
+
+        .legend-item.geophony .legend-dot {
+            background: var(--geophony);
+            color: var(--geophony);
+        }
+
+        .legend-item.anthropophony .legend-dot {
+            background: var(--anthropophony);
+            color: var(--anthropophony);
+        }
+
+        .legend-label {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        /* Map */
+        #map {
+            width: 100%;
+            height: 600px;
+            border-radius: 15px;
+        }
+
+        /* Add location button */
+        .add-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 30px rgba(102, 126, 234, 0.6);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.95), rgba(49, 46, 129, 0.95));
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            padding: 2.5rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .close-btn:hover {
+            opacity: 1;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* ARCHIVE.ORG INSTRUCTIONS BOX */
+        .info-box {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-box h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: #93c5fd;
+        }
+
+        .info-box p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #a5b4fc;
+        }
+
+        .info-box a {
+            color: #93c5fd;
+            text-decoration: underline;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(102, 126, 234, 0.6);
+        }
+
+        /* Custom Leaflet popup */
+        .leaflet-popup-content-wrapper {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.95), rgba(49, 46, 129, 0.95));
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0;
+        }
+
+        .leaflet-popup-tip {
+            background: rgba(30, 58, 138, 0.95);
+        }
+
+        .popup-content {
+            padding: 1rem;
+        }
+
+        .popup-content h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+            color: #a5b4fc;
+        }
+
+        .popup-content p {
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        .popup-content audio {
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-badge.biophony {
+            background: var(--biophony);
+            color: white;
+        }
+
+        .category-badge.geophony {
+            background: var(--geophony);
+            color: white;
+        }
+
+        .category-badge.anthropophony {
+            background: var(--anthropophony);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            #map {
+                height: 400px;
+            }
+
+            .legend {
+                gap: 1rem;
+            }
+
+            .add-btn {
+                bottom: 1rem;
+                right: 1rem;
+                padding: 0.75rem 1.5rem;
+            }
+        }
+    </style>
 </head>
-
 <body>
+    <!-- Animated particles -->
+    <div class="particles" id="particles"></div>
 
-<div id="map"></div>
+    <header>
+        <h1>APSE Sound Map</h1>
+        <p class="subtitle">Ecological Soundscapes of Europe</p>
+    </header>
 
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <div class="container">
+        <!-- LEGEND IN ENGLISH -->
+        <div class="legend">
+            <div class="legend-item biophony" data-category="biophony">
+                <span class="legend-dot"></span>
+                <span class="legend-label">Biophony (Biological sounds)</span>
+            </div>
+            <div class="legend-item geophony" data-category="geophony">
+                <span class="legend-dot"></span>
+                <span class="legend-label">Geophony (Natural elements)</span>
+            </div>
+            <div class="legend-item anthropophony" data-category="anthropophony">
+                <span class="legend-dot"></span>
+                <span class="legend-label">Anthropophony (Human activity)</span>
+            </div>
+        </div>
 
-<script>
-/* -------------------------------------------------------
-   BASE MAP
-------------------------------------------------------- */
-const map = L.map('map').setView([42.1, 14.2], 5);
+        <!-- Map -->
+        <div class="glass-card">
+            <div id="map"></div>
+        </div>
+    </div>
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19
-}).addTo(map);
+    <!-- Add Location Button -->
+    <button class="add-btn" id="addLocationBtn">
+        <span>+</span>
+        <span>Add Location</span>
+    </button>
 
-/* -------------------------------------------------------
-   MARKER ICONS (Leaflet-style colored drops)
-------------------------------------------------------- */
-function coloredIcon(color) {
-  return new L.Icon({
-    iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
-    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
-}
+    <!-- MODAL WITH ARCHIVE.ORG INSTRUCTIONS -->
+    <div class="modal" id="addLocationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Sound Location</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
 
-const icons = {
-  biophony: coloredIcon("green"),
-  anthropophony: coloredIcon("red"),
-  geophony: coloredIcon("blue")
-};
+            <!-- ARCHIVE.ORG INSTRUCTIONS IN ENGLISH -->
+            <div class="info-box">
+                <h3>How to upload audio from Archive.org</h3>
+                <p>1. Upload your audio file to <a href="https://archive.org/create" target="_blank">Archive.org</a></p>
+                <p>2. After upload, get the direct link format:</p>
+                <p><code>https://archive.org/download/[item-name]/[filename.mp3]</code></p>
+                <p>3. Paste this URL in the "Audio URL" field below</p>
+            </div>
 
-/* -------------------------------------------------------
-   LOCALITÀ + FILE AUDIO
-   (i nomi file NON compaiono mai nei popup)
-------------------------------------------------------- */
-const data = {
-  lamadeipeligni: {
-    center: [42.083, 14.183],
-    radius: 0.004,
-    category: "biophony",
-    files: [
-      "barn-swallow.mp3",
-      "buzzards-crows-pine-forest.mp3",
-      "common-buzzard.mp3",
-      "common-chaffinch.mp3",
-      "common-kestrel.mp3",
-      "common-raven.mp3",
-      "common-redstart.mp3",
-      "dalmatian-woodpecker.mp3",
-      "eurasian-blackcap.mp3",
-      "eurasian-treecreeper.mp3",
-      "european-robin.mp3",
-      "goldcrest.mp3",
-      "golden-eagle.mp3",
-      "great-tit.mp3",
-      "hifi-soundscape-lama.mp3",
-      "house-martin.mp3",
-      "peregrine-falcon.mp3",
-      "red-deer-roaring.mp3",
-      "river-forest-binaural.mp3",
-      "tree-frogs-river.mp3"
-    ],
-    path: "sounds/lamadeipeligni/biophony/"
-  },
+            <form id="addLocationForm">
+                <div class="form-group">
+                    <label for="locationTitle">Location Title *</label>
+                    <input type="text" id="locationTitle" required placeholder="e.g., Ancient Forest">
+                </div>
 
-  larissa: {
-    center: [39.639, 22.419],
-    radius: 0.004,
-    category: "biophony",
-    files: [
-      "11_canary-doorbell-72375.mp3",
-      "13_nightingale-birds-spring-339975.mp3",
-      "15_croaking-frogs.mp3",
-      "1_bees-54954.mp3",
-      "3_cicada-126650.mp3",
-      "AUDIO-2025-03-16-18-43-33.aac",
-      "AUDIO-2025-03-16-18-44-45.aac",
-      "AUDIO-2025-03-17-13-00-09.aac"
-    ],
-    path: "sounds/larissa/biophony/"
-  },
+                <div class="form-group">
+                    <label for="locationLat">Latitude *</label>
+                    <input type="number" id="locationLat" step="any" required placeholder="e.g., 39.892">
+                </div>
 
-  almazora: {
-    center: [39.938, -0.065],
-    radius: 0.004,
-    category: "anthropophony",
-    files: [
-      "2 Soundscape Wind Through The Cane - Clovis Tisserand.mp3",
-      "3 Soundscape Wind Through The Wheat - Clovis Tisserand.mp3",
-      "BandCampDownloader.app - soundscape - CRICKETS IN.mp3"
-    ],
-    path: "sounds/almazora/anthropophony/"
-  }
-};
+                <div class="form-group">
+                    <label for="locationLng">Longitude *</label>
+                    <input type="number" id="locationLng" step="any" required placeholder="e.g., 22.481">
+                </div>
 
-/* -------------------------------------------------------
-   FUNZIONE PER GENERARE COORDINATE RANDOM
-------------------------------------------------------- */
-function randomOffset(radius) {
-  return (Math.random() - 0.5) * radius * 2;
-}
+                <div class="form-group">
+                    <label for="soundCategory">Sound Category *</label>
+                    <select id="soundCategory" required>
+                        <option value="">Select category...</option>
+                        <option value="biophony">Biophony (Biological sounds - birds, insects, animals)</option>
+                        <option value="geophony">Geophony (Natural elements - wind, water, thunder)</option>
+                        <option value="anthropophony">Anthropophony (Human activity - traffic, music, voices)</option>
+                    </select>
+                </div>
 
-/* -------------------------------------------------------
-   GENERAZIONE MARKER
-------------------------------------------------------- */
-Object.keys(data).forEach(place => {
-  const loc = data[place];
+                <div class="form-group">
+                    <label for="audioUrl">Audio URL (Archive.org) *</label>
+                    <input type="url" id="audioUrl" required placeholder="https://archive.org/download/...">
+                </div>
 
-  loc.files.forEach(file => {
-    const lat = loc.center[0] + randomOffset(loc.radius);
-    const lng = loc.center[1] + randomOffset(loc.radius);
+                <div class="form-group">
+                    <label for="locationDesc">Description</label>
+                    <textarea id="locationDesc" placeholder="Describe the soundscape..."></textarea>
+                </div>
 
-    const rawURL =
-      "https://raw.githubusercontent.com/ApseProjectEU/soundmap/main/" +
-      loc.path +
-      encodeURIComponent(file);
+                <button type="submit" class="submit-btn">Add Location to Map</button>
+            </form>
+        </div>
+    </div>
 
-    L.marker([lat, lng], { icon: icons[loc.category] })
-      .addTo(map)
-      .bindPopup(`<audio controls src="${rawURL}" style="width:200px;"></audio>`);
-  });
-});
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-/* -------------------------------------------------------
-   LEGENDA
-------------------------------------------------------- */
-const legend = L.control({ position: "bottomright" });
+    <script>
+        // Generate animated particles
+        function createParticles() {
+            const particles = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particles.appendChild(particle);
+            }
+        }
+        createParticles();
 
-legend.onAdd = function () {
-  const div = L.DomUtil.create("div", "legend");
-  div.innerHTML = `
-    <b>Sound Categories</b><br>
-    <i style="background-image:url('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png')"></i> Biophony<br>
-    <i style="background-image:url('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png')"></i> Anthropophony<br>
-    <i style="background-image:url('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png')"></i> Geophony
-  `;
-  return div;
-};
+        // Initialize map
+        const map = L.map('map').setView([40.0, 20.0], 6);
 
-legend.addTo(map);
-</script>
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
 
+        // MARKER COLORS BY CATEGORY
+        const markerColors = {
+            biophony: '#10b981',      // GREEN
+            geophony: '#3b82f6',      // BLUE
+            anthropophony: '#f59e0b'  // ORANGE
+        };
+
+        // Custom marker icons with colors
+        function createCustomIcon(category) {
+            const color = markerColors[category];
+            return L.divIcon({
+                className: 'custom-marker',
+                html: `<div style="
+                    width: 30px;
+                    height: 30px;
+                    background: ${color};
+                    border: 3px solid white;
+                    border-radius: 50%;
+                    box-shadow: 0 0 15px ${color};
+                    animation: pulse 2s ease-in-out infinite;
+                "></div>`,
+                iconSize: [30, 30],
+                iconAnchor: [15, 15]
+            });
+        }
+
+        // Add pulse animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Load and display locations
+        let allMarkers = [];
+
+        fetch('locations.json')
+            .then(response => response.json())
+            .then(locations => {
+                locations.forEach(location => {
+                    const marker = L.marker([location.lat, location.lng], {
+                        icon: createCustomIcon(location.category)
+                    }).addTo(map);
+
+                    const categoryLabel = location.category.charAt(0).toUpperCase() + location.category.slice(1);
+
+                    const popupContent = `
+                        <div class="popup-content">
+                            <span class="category-badge ${location.category}">${categoryLabel}</span>
+                            <h3>${location.title}</h3>
+                            <p>${location.description}</p>
+                            <audio controls>
+                                <source src="${location.audioUrl}" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+                    `;
+
+                    marker.bindPopup(popupContent, {
+                        maxWidth: 300,
+                        className: 'custom-popup'
+                    });
+
+                    allMarkers.push({ marker, category: location.category });
+                });
+            })
+            .catch(error => console.error('Error loading locations:', error));
+
+        // LEGEND FILTERING
+        document.querySelectorAll('.legend-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const category = this.dataset.category;
+
+                this.classList.toggle('active');
+
+                const activeItems = document.querySelectorAll('.legend-item.active');
+
+                if (activeItems.length === 0) {
+                    // No filters - show all
+                    allMarkers.forEach(({ marker }) => map.addLayer(marker));
+                } else {
+                    // Filter by active categories
+                    const activeCategories = Array.from(activeItems).map(el => el.dataset.category);
+                    allMarkers.forEach(({ marker, category }) => {
+                        if (activeCategories.includes(category)) {
+                            map.addLayer(marker);
+                        } else {
+                            map.removeLayer(marker);
+                        }
+                    });
+                }
+            });
+        });
+
+        // Modal functionality
+        const modal = document.getElementById('addLocationModal');
+        const addBtn = document.getElementById('addLocationBtn');
+        const closeBtn = document.getElementById('closeModal');
+
+        addBtn.addEventListener('click', () => {
+            modal.classList.add('active');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+
+        // Form submission
+        document.getElementById('addLocationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const newLocation = {
+                title: document.getElementById('locationTitle').value,
+                lat: parseFloat(document.getElementById('locationLat').value),
+                lng: parseFloat(document.getElementById('locationLng').value),
+                category: document.getElementById('soundCategory').value,
+                audioUrl: document.getElementById('audioUrl').value,
+                description: document.getElementById('locationDesc').value || 'No description provided'
+            };
+
+            // Add marker to map
+            const marker = L.marker([newLocation.lat, newLocation.lng], {
+                icon: createCustomIcon(newLocation.category)
+            }).addTo(map);
+
+            const categoryLabel = newLocation.category.charAt(0).toUpperCase() + newLocation.category.slice(1);
+
+            const popupContent = `
+                <div class="popup-content">
+                    <span class="category-badge ${newLocation.category}">${categoryLabel}</span>
+                    <h3>${newLocation.title}</h3>
+                    <p>${newLocation.description}</p>
+                    <audio controls>
+                        <source src="${newLocation.audioUrl}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+            `;
+
+            marker.bindPopup(popupContent, {
+                maxWidth: 300,
+                className: 'custom-popup'
+            }).openPopup();
+
+            allMarkers.push({ marker, category: newLocation.category });
+
+            map.setView([newLocation.lat, newLocation.lng], 12);
+
+            modal.classList.remove('active');
+            this.reset();
+
+            alert('Location added successfully! Note: This is temporary and will disappear on page reload.');
+        });
+    </script>
 </body>
 </html>
