@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <title>APSE Soundmap</title>
+<base href="/soundmap/">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <!-- Leaflet CSS -->
@@ -77,96 +78,56 @@ const icons = {
 };
 
 /* -------------------------------------------------------
-   LOCALITÀ + FILE AUDIO
-   (i nomi file NON compaiono mai nei popup)
+   LOAD LOCATIONS FROM JSON
 ------------------------------------------------------- */
-const data = {
-  lamadeipeligni: {
-    center: [42.083, 14.183],
-    radius: 0.004,
-    category: "biophony",
-    files: [
-      "barn-swallow.mp3",
-      "buzzards-crows-pine-forest.mp3",
-      "common-buzzard.mp3",
-      "common-chaffinch.mp3",
-      "common-kestrel.mp3",
-      "common-raven.mp3",
-      "common-redstart.mp3",
-      "dalmatian-woodpecker.mp3",
-      "eurasian-blackcap.mp3",
-      "eurasian-treecreeper.mp3",
-      "european-robin.mp3",
-      "goldcrest.mp3",
-      "golden-eagle.mp3",
-      "great-tit.mp3",
-      "hifi-soundscape-lama.mp3",
-      "house-martin.mp3",
-      "peregrine-falcon.mp3",
-      "red-deer-roaring.mp3",
-      "river-forest-binaural.mp3",
-      "tree-frogs-river.mp3"
-    ],
-    path: "sounds/lamadeipeligni/biophony/"
-  },
+let allMarkers = [];
 
-  larissa: {
-    center: [39.639, 22.419],
-    radius: 0.004,
-    category: "biophony",
-    files: [
-      "11_canary-doorbell-72375.mp3",
-      "13_nightingale-birds-spring-339975.mp3",
-      "15_croaking-frogs.mp3",
-      "1_bees-54954.mp3",
-      "3_cicada-126650.mp3",
-      "AUDIO-2025-03-16-18-43-33.aac",
-      "AUDIO-2025-03-16-18-44-45.aac",
-      "AUDIO-2025-03-17-13-00-09.aac"
-    ],
-    path: "sounds/larissa/biophony/"
-  },
+fetch('./locations.json')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        console.log('✓ locations.json loaded');
+        return response.json();
+    })
+    .then(locations => {
+        console.log(`✓ Loaded ${locations.length} locations`);
 
-  almazora: {
-    center: [39.938, -0.065],
-    radius: 0.004,
-    category: "anthropophony",
-    files: [
-      "2 Soundscape Wind Through The Cane - Clovis Tisserand.mp3",
-      "3 Soundscape Wind Through The Wheat - Clovis Tisserand.mp3",
-      "BandCampDownloader.app - soundscape - CRICKETS IN.mp3"
-    ],
-    path: "sounds/almazora/anthropophony/"
-  }
-};
+        locations.forEach(location => {
+            const marker = L.marker([location.lat, location.lng], {
+                icon: icons[location.category]
+            }).addTo(map);
 
-/* -------------------------------------------------------
-   FUNZIONE PER GENERARE COORDINATE RANDOM
-------------------------------------------------------- */
-function randomOffset(radius) {
-  return (Math.random() - 0.5) * radius * 2;
-}
+            const categoryLabel = location.category.charAt(0).toUpperCase() + location.category.slice(1);
 
-/* -------------------------------------------------------
-   GENERAZIONE MARKER
-------------------------------------------------------- */
-Object.keys(data).forEach(place => {
-  const loc = data[place];
+            const popupContent = `
+                <div class="popup-content">
+                    <span class="category-badge ${location.category}">${categoryLabel}</span>
+                    <h3>${location.title}</h3>
+                    <p>${location.description}</p>
+                    <audio controls
+                           style="width:200px;"
+                           onerror="console.error('❌ Audio failed:', '${location.audioUrl}')">
+                        <source src="${location.audioUrl}" type="audio/mpeg">
+                        Audio not available
+                    </audio>
+                </div>
+            `;
 
-  loc.files.forEach(file => {
-    const lat = loc.center[0] + randomOffset(loc.radius);
-    const lng = loc.center[1] + randomOffset(loc.radius);
+            marker.bindPopup(popupContent, {
+                maxWidth: 300,
+                className: 'custom-popup'
+            });
 
-    const rawURL =
-      "https://raw.githubusercontent.com/ApseProjectEU/soundmap/main/" +
-      loc.path +
-      encodeURIComponent(file);
+            allMarkers.push({ marker, category: location.category });
+        });
 
-    L.marker([lat, lng], { icon: icons[loc.category] })
-      .addTo(map)
-      .bindPopup(`<audio controls crossorigin="anonymous" preload="metadata" src="${rawURL}" style="width:200px;"></audio>`);
-  });
-});
+        console.log('✓ All markers loaded');
+    })
+    .catch(error => {
+        console.error('❌ ERROR:', error);
+        alert('Failed to load map: ' + error.message);
+    });
 
 /* -------------------------------------------------------
    LEGENDA
