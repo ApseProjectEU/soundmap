@@ -43,6 +43,39 @@
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    transition: left 0.3s ease, opacity 0.3s ease;
+  }
+
+  #sidebar.hidden {
+    left: -400px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  #sidebar-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(30,41,59,0.8);
+    border: 1px solid rgba(148,163,184,0.5);
+    color: #f97316;
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s;
+  }
+
+  #sidebar-close:hover {
+    background: rgba(249, 115, 22, 0.2);
+    border-color: #f97316;
+    transform: rotate(90deg);
   }
 
   #sidebar h2 {
@@ -339,8 +372,7 @@
     #sidebar {
       width: 280px;
       left: -300px; /* Nascosta di default */
-      transition: left 0.3s ease;
-      z-index: 999; /* Sotto il menu toggle */
+      z-index: 999;
     }
 
     #sidebar.open {
@@ -348,35 +380,13 @@
       z-index: 1000;
     }
 
-    #menu-toggle {
-      display: flex !important; /* Forza visualizzazione */
-      position: fixed; /* Fixed invece absolute */
-      top: 20px;
-      left: 20px;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #145C3A 0%, #0A2F24 100%);
-      backdrop-filter: blur(12px);
-      border: 2px solid rgba(34, 197, 94, 0.6);
-      color: #fff;
-      font-size: 26px;
-      font-weight: bold;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 1002; /* Sopra tutto */
-      box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
-      transition: all 0.3s;
-    }
-
-    #menu-toggle:active {
-      transform: scale(0.95);
+    #sidebar.hidden {
+      left: -300px;
     }
 
     #zoom-bar {
       right: 16px;
-      top: 20px; /* Allineato con menu toggle */
+      top: 20px;
     }
 
     .zoom-btn {
@@ -399,7 +409,36 @@
   }
 
   #menu-toggle {
-    display: none; /* Nascosto SOLO su desktop */
+    display: flex; /* SEMPRE VISIBILE - desktop e mobile */
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #145C3A 0%, #0A2F24 100%);
+    backdrop-filter: blur(12px);
+    border: 2px solid rgba(34, 197, 94, 0.6);
+    color: #fff;
+    font-size: 26px;
+    font-weight: bold;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1002;
+    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
+    transition: all 0.3s;
+    opacity: 0; /* Nascosto quando sidebar aperta */
+    pointer-events: none;
+  }
+
+  #menu-toggle.show {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  #menu-toggle:active {
+    transform: scale(0.95);
   }
 
   /* Overlay scuro quando sidebar aperta */
@@ -430,6 +469,8 @@
 <div id="menu-toggle">☰</div>
 
 <div id="sidebar">
+  <div id="sidebar-close">×</div>
+  
   <h2>APSE Sound Map</h2>
   <p>Interactive Soundscape Explorer</p>
 
@@ -728,14 +769,6 @@ document.querySelectorAll(".toggle").forEach(toggle => {
     } else {
       map.removeLayer(groups[cat]);
     }
-    
-    // Chiudi sidebar su mobile dopo toggle filtro
-    if (window.innerWidth <= 768) {
-      setTimeout(() => {
-        sidebar.classList.remove('open');
-        overlay.classList.remove('show');
-      }, 300);
-    }
   };
 });
 
@@ -747,11 +780,6 @@ const submitBtn = document.getElementById("btn-submit");
 
 addBtn.onclick = () => {
   modal.classList.add("show");
-  // Chiudi sidebar quando apri modal su mobile
-  if (window.innerWidth <= 768) {
-    sidebar.classList.remove('open');
-    overlay.classList.remove('show');
-  }
 };
 cancelBtn.onclick = () => modal.classList.remove("show");
 
@@ -812,38 +840,61 @@ modal.onclick = (e) => {
   }
 };
 
-/* MOBILE MENU TOGGLE */
+/* SIDEBAR TOGGLE - funziona DESKTOP + MOBILE */
 const menuToggle = document.getElementById("menu-toggle");
 const sidebar = document.getElementById("sidebar");
+const sidebarClose = document.getElementById("sidebar-close");
 const overlay = document.getElementById("sidebar-overlay");
 
-function toggleSidebar() {
-  const isOpen = sidebar.classList.contains('open');
-  
-  if (isOpen) {
-    // Chiudi
-    sidebar.classList.remove('open');
-    overlay.classList.remove('show');
+// Inizializza stato in base a dimensione schermo
+function initSidebar() {
+  if (window.innerWidth <= 768) {
+    // MOBILE: sidebar chiusa, menu visibile
+    sidebar.classList.add('hidden');
+    menuToggle.classList.add('show');
   } else {
-    // Apri
-    sidebar.classList.add('open');
-    overlay.classList.add('show');
+    // DESKTOP: sidebar aperta, menu nascosto
+    sidebar.classList.remove('hidden');
+    menuToggle.classList.remove('show');
   }
 }
 
-menuToggle.onclick = toggleSidebar;
+initSidebar();
 
-// Chiudi sidebar cliccando sull'overlay
-overlay.onclick = () => {
+// Re-inizializza su resize
+window.addEventListener('resize', initSidebar);
+
+function openSidebar() {
+  sidebar.classList.remove('hidden');
+  sidebar.classList.add('open');
+  overlay.classList.add('show');
+  menuToggle.classList.remove('show');
+}
+
+function closeSidebar() {
+  sidebar.classList.add('hidden');
   sidebar.classList.remove('open');
   overlay.classList.remove('show');
-};
+  
+  // Mostra menu solo su mobile
+  if (window.innerWidth <= 768) {
+    menuToggle.classList.add('show');
+  }
+}
 
-// Chiudi sidebar quando clicchi sulla mappa (mobile)
+// Pulsante ☰ apre sidebar
+menuToggle.onclick = openSidebar;
+
+// Pulsante X chiude sidebar
+sidebarClose.onclick = closeSidebar;
+
+// Overlay chiude sidebar
+overlay.onclick = closeSidebar;
+
+// Click su mappa chiude sidebar (solo mobile)
 map.on('click', () => {
   if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
-    sidebar.classList.remove('open');
-    overlay.classList.remove('show');
+    closeSidebar();
   }
 });
 </script>
