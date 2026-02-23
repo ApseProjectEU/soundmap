@@ -164,7 +164,7 @@ Object.keys(data).forEach(place => {
 
     L.marker([lat, lng], { icon: icons[loc.category] })
       .addTo(map)
-      .bindPopup(`<audio controls src="${rawURL}" style="width:200px;"></audio>`);
+      .bindPopup(`<audio controls crossorigin="anonymous" preload="metadata" src="${rawURL}" style="width:200px;"></audio>`);
   });
 });
 
