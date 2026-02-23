@@ -340,41 +340,49 @@
       width: 280px;
       left: -300px; /* Nascosta di default */
       transition: left 0.3s ease;
+      z-index: 999; /* Sotto il menu toggle */
     }
 
     #sidebar.open {
       left: 16px;
+      z-index: 1000;
     }
 
     #menu-toggle {
-      display: flex;
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      width: 44px;
-      height: 44px;
+      display: flex !important; /* Forza visualizzazione */
+      position: fixed; /* Fixed invece absolute */
+      top: 20px;
+      left: 20px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
-      background: rgba(15,23,42,0.9);
+      background: linear-gradient(135deg, #145C3A 0%, #0A2F24 100%);
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(148,163,184,0.5);
-      color: #22c55e;
-      font-size: 24px;
+      border: 2px solid rgba(34, 197, 94, 0.6);
+      color: #fff;
+      font-size: 26px;
+      font-weight: bold;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      z-index: 1001;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      z-index: 1002; /* Sopra tutto */
+      box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
+      transition: all 0.3s;
+    }
+
+    #menu-toggle:active {
+      transform: scale(0.95);
     }
 
     #zoom-bar {
       right: 16px;
-      top: 80px; /* Spostato più in basso */
+      top: 20px; /* Allineato con menu toggle */
     }
 
     .zoom-btn {
-      width: 44px;
-      height: 44px;
-      font-size: 22px;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
     }
   }
 
@@ -391,12 +399,33 @@
   }
 
   #menu-toggle {
-    display: none; /* Nascosto su desktop */
+    display: none; /* Nascosto SOLO su desktop */
+  }
+
+  /* Overlay scuro quando sidebar aperta */
+  #sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  #sidebar-overlay.show {
+    display: block;
+    opacity: 1;
   }
 </style>
 </head>
 
 <body>
+
+<div id="sidebar-overlay"></div>
 
 <div id="menu-toggle">☰</div>
 
@@ -699,6 +728,14 @@ document.querySelectorAll(".toggle").forEach(toggle => {
     } else {
       map.removeLayer(groups[cat]);
     }
+    
+    // Chiudi sidebar su mobile dopo toggle filtro
+    if (window.innerWidth <= 768) {
+      setTimeout(() => {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
+      }, 300);
+    }
   };
 });
 
@@ -708,7 +745,14 @@ const addBtn = document.getElementById("add-marker");
 const cancelBtn = document.getElementById("btn-cancel");
 const submitBtn = document.getElementById("btn-submit");
 
-addBtn.onclick = () => modal.classList.add("show");
+addBtn.onclick = () => {
+  modal.classList.add("show");
+  // Chiudi sidebar quando apri modal su mobile
+  if (window.innerWidth <= 768) {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+  }
+};
 cancelBtn.onclick = () => modal.classList.remove("show");
 
 submitBtn.onclick = () => {
@@ -771,15 +815,35 @@ modal.onclick = (e) => {
 /* MOBILE MENU TOGGLE */
 const menuToggle = document.getElementById("menu-toggle");
 const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("sidebar-overlay");
 
-menuToggle.onclick = () => {
-  sidebar.classList.toggle("open");
+function toggleSidebar() {
+  const isOpen = sidebar.classList.contains('open');
+  
+  if (isOpen) {
+    // Chiudi
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+  } else {
+    // Apri
+    sidebar.classList.add('open');
+    overlay.classList.add('show');
+  }
+}
+
+menuToggle.onclick = toggleSidebar;
+
+// Chiudi sidebar cliccando sull'overlay
+overlay.onclick = () => {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('show');
 };
 
 // Chiudi sidebar quando clicchi sulla mappa (mobile)
 map.on('click', () => {
   if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
     sidebar.classList.remove('open');
+    overlay.classList.remove('show');
   }
 });
 </script>
