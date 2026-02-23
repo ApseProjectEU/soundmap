@@ -617,7 +617,7 @@ const soundData = {
 
   larissa: {
     base: [39.639, 22.419],
-    path: "larissa/",
+    path: "larissa/biophony/",  // CORRETTO: tutti i file in /biophony/
     sounds: {
       biophony: [
         "11_canary-doorbell-72375.mp3",
@@ -824,11 +824,20 @@ function addMarkers() {
     });
 
     const clusterMarker = L.marker(cluster.coords, { icon: clusterIcon });
+    
+    // CLICK per zoom automatico sulla località
+    clusterMarker.on('click', function() {
+      map.flyTo(cluster.coords, 13, {
+        duration: 1.5,
+        easeLinearity: 0.25
+      });
+    });
+
     clusterMarker.bindPopup(`
       <div style="text-align: center; padding: 8px;">
         <div style="font-size: 16px; font-weight: 700; color: #22c55e; margin-bottom: 4px;">${cluster.name}</div>
         <div style="font-size: 13px; color: #94a3b8;">${cluster.count} soundscape recordings</div>
-        <div style="font-size: 11px; color: #64748b; margin-top: 6px;">Zoom in to explore individual sounds</div>
+        <div style="font-size: 11px; color: #64748b; margin-top: 6px;">👆 Click to zoom in</div>
       </div>
     `);
 
