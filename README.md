@@ -1,6 +1,6 @@
 # APSE Sound Map - Ecological Soundscapes of Europe
 
-Interactive sound map for the APSE Erasmus+ KA210-YOU project featuring 46 ecological soundscapes from Italy, Greece, Spain, and Nepal.
+Interactive sound map for the APSE Erasmus+ KA210-YOU project featuring 46 ecological soundscapes from Italy, Greece and Spain.
 
 ## Features
 
