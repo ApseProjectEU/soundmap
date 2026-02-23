@@ -412,5 +412,50 @@
     "description": "Natural dunes with wind and sea sounds",
     "audioUrl": "sounds/almazora/geophony/coastal-dunes.mp3",
     "imageUrl": "images/almazora-dunes.jpg"
+  },
+  {
+    "title": "Valencia Ruzafa Real City Sounds",
+    "lat": 39.4699,
+    "lng": -0.3763,
+    "category": "anthropophony",
+    "description": "Urban soundscape walk through Valencia city center",
+    "audioUrl": "sounds/almazora/Valencia Ruzafa (Russafa)  Real City Sounds 4K Walk - No Music.mp3",
+    "imageUrl": "images/valencia-ruzafa.jpg"
+  },
+  {
+    "title": "Larisa Urban Fountain",
+    "lat": 39.6345,
+    "lng": 22.4150,
+    "category": "anthropophony",
+    "description": "Public fountain and square sounds in Larisa center",
+    "audioUrl": "sounds/larissa/biophony/smallfountain.mp3",
+    "imageUrl": "images/larisa-fountain.jpg"
+  },
+  {
+    "title": "Larisa Urban Road",
+    "lat": 39.6380,
+    "lng": 22.4200,
+    "category": "anthropophony",
+    "description": "Urban traffic and street ambience in Larisa",
+    "audioUrl": "sounds/larissa/biophony/road.mp3",
+    "imageUrl": "images/larisa-road.jpg"
+  },
+  {
+    "title": "Larisa Festival Celebration",
+    "lat": 39.6420,
+    "lng": 22.4100,
+    "category": "anthropophony",
+    "description": "Traditional festival gathering with voices and music",
+    "audioUrl": "sounds/larissa/biophony/panigiri.mp3",
+    "imageUrl": "images/larisa-festival.jpg"
+  },
+  {
+    "title": "Crickets North Greece",
+    "lat": 39.9300,
+    "lng": -0.0700,
+    "category": "biophony",
+    "description": "Insect chorus - crickets and cicadas at night",
+    "audioUrl": "sounds/almazora/anthropophony/BandCampDownloader.app - soundscape - CRICKETS IN THE NORTH OF GREECE - Clovis Tisserand.mp3",
+    "imageUrl": "images/greece-crickets.jpg"
   }
 ]
