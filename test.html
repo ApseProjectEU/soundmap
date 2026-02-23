@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>APSE Test</title>
+    <base href="/soundmap/">
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1e293b; color: #fff; }
+        .ok { color: #10b981; font-weight: bold; }
+        .fail { color: #ef4444; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Audio File Test</h1>
+    <div id="results">Testing...</div>
+
+    <script>
+    const tests = [
+        'locations.json',
+        'sounds/forest-demo.mp3',
+        'sounds/cicadas.mp3',
+        'sounds/lamadeipeligni/biophony/barn-swallow.mp3'
+    ];
+
+    const results = document.getElementById('results');
+    results.innerHTML = '';
+
+    tests.forEach(file => {
+        fetch(file, { method: 'HEAD' })
+            .then(r => {
+                const div = document.createElement('div');
+                div.className = r.ok ? 'ok' : 'fail';
+                div.textContent = `${r.ok ? '✓' : '✗'} ${file} - ${r.status}`;
+                results.appendChild(div);
+            });
+    });
+    </script>
+</body>
+</html>
