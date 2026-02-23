@@ -1,0 +1,416 @@
+[
+  {
+    "title": "Olympus Forest",
+    "lat": 40.0850,
+    "lng": 22.3920,
+    "category": "biophony",
+    "description": "Dense forest sounds from Mount Olympus region with birds and rustling leaves",
+    "audioUrl": "sounds/forest-demo.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Pertouli",
+    "lat": 39.5820,
+    "lng": 21.8750,
+    "category": "biophony",
+    "description": "Mountain village soundscape with traditional cicadas and wildlife",
+    "audioUrl": "sounds/cicadas.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Javea Road",
+    "lat": 38.7430,
+    "lng": -0.1560,
+    "category": "anthropophony",
+    "description": "Urban road sounds in Javea coastal town",
+    "audioUrl": "sounds/road.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Javea Beach",
+    "lat": 38.7480,
+    "lng": -0.1510,
+    "category": "geophony",
+    "description": "Mediterranean sea waves and beach soundscape",
+    "audioUrl": "sounds/sea_waves.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Montgo",
+    "lat": 38.7340,
+    "lng": -0.1480,
+    "category": "biophony",
+    "description": "Mountain peak with Mediterranean vegetation and wildlife",
+    "audioUrl": "sounds/montgo.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Central Square Larissa",
+    "lat": 39.6390,
+    "lng": 22.4190,
+    "category": "anthropophony",
+    "description": "Urban plaza with fountain and city ambience",
+    "audioUrl": "sounds/smallfountain.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Nea Pefki",
+    "lat": 39.6520,
+    "lng": 22.9870,
+    "category": "biophony",
+    "description": "Coastal area with bird calls and seaside atmosphere",
+    "audioUrl": "sounds/Pigeon.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Enipeas Waterfalls",
+    "lat": 39.0720,
+    "lng": 22.2150,
+    "category": "geophony",
+    "description": "Cascading waterfall sounds in natural gorge",
+    "audioUrl": "sounds/waterfall.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Summer Noon Songs",
+    "lat": 39.1870,
+    "lng": 21.8250,
+    "category": "biophony",
+    "description": "Summer cicada chorus at midday",
+    "audioUrl": "sounds/urbancicades.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Papa Nero",
+    "lat": 38.1640,
+    "lng": 23.7320,
+    "category": "anthropophony",
+    "description": "Festival celebration sounds and traditional gathering",
+    "audioUrl": "sounds/panigiri.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Lama dei Peligni",
+    "lat": 42.0430,
+    "lng": 14.1875,
+    "category": "biophony",
+    "description": "Mountain sanctuary with natural ambience",
+    "audioUrl": "sounds/Lama_dei_Peligni.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Fonte Cannella",
+    "lat": 42.0450,
+    "lng": 14.2050,
+    "category": "geophony",
+    "description": "Natural spring fountain in mountain setting",
+    "audioUrl": "sounds/smallfountain.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Urban Cicadas",
+    "lat": 39.3640,
+    "lng": 23.7250,
+    "category": "biophony",
+    "description": "City cicadas creating urban wildlife soundscape",
+    "audioUrl": "sounds/urbancicades.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Volos Port",
+    "lat": 39.3640,
+    "lng": 23.1920,
+    "category": "anthropophony",
+    "description": "Harbor sounds with boats and maritime activity",
+    "audioUrl": "sounds/boat1.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Nepal Earthquake",
+    "lat": 28.2282,
+    "lng": 84.7268,
+    "category": "geophony",
+    "description": "Natural disaster documentary sound recording",
+    "audioUrl": "sounds/nepalearthquakesound.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Pigeon Thessaloniki",
+    "lat": 40.6401,
+    "lng": 22.9444,
+    "category": "biophony",
+    "description": "Urban pigeons and bird calls in city square",
+    "audioUrl": "sounds/rooster.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Pine Forest South - Barn Swallow",
+    "lat": 42.0429,
+    "lng": 14.1875,
+    "category": "biophony",
+    "description": "Barn swallow calls in pine forest entrance",
+    "audioUrl": "sounds/lamadeipeligni/biophony/barn-swallow.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Pine Forest - Buzzards and Crows",
+    "lat": 42.0425,
+    "lng": 14.1883,
+    "category": "biophony",
+    "description": "Buzzards and crows in mixed forest canopy",
+    "audioUrl": "sounds/lamadeipeligni/biophony/buzzards-crows-pine-forest.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Upper Pine Forest - Common Buzzard",
+    "lat": 42.0448,
+    "lng": 14.1888,
+    "category": "biophony",
+    "description": "Common buzzard vocalizations in upper forest levels",
+    "audioUrl": "sounds/lamadeipeligni/biophony/common-buzzard.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Pine Forest Ridge - Common Chaffinch",
+    "lat": 42.0455,
+    "lng": 14.1870,
+    "category": "biophony",
+    "description": "Common chaffinch songs on forest ridge",
+    "audioUrl": "sounds/lamadeipeligni/biophony/common-chaffinch.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Forest Edge - Common Kestrel",
+    "lat": 42.0460,
+    "lng": 14.1892,
+    "category": "biophony",
+    "description": "Common kestrel calls at forest boundary",
+    "audioUrl": "sounds/lamadeipeligni/biophony/common-kestrel.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Old Forest Path - Common Raven",
+    "lat": 42.0452,
+    "lng": 14.1830,
+    "category": "biophony",
+    "description": "Common raven croaking along ancient forest paths",
+    "audioUrl": "sounds/lamadeipeligni/biophony/common-raven.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Forest Threshold - Common Redstart",
+    "lat": 42.0438,
+    "lng": 14.1822,
+    "category": "biophony",
+    "description": "Common redstart vocalizations at forest threshold",
+    "audioUrl": "sounds/lamadeipeligni/biophony/common-redstart.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Lower Forest Clearing - Dalmatian Woodpecker",
+    "lat": 42.0421,
+    "lng": 14.1834,
+    "category": "biophony",
+    "description": "Dalmatian woodpecker calls in forest clearing",
+    "audioUrl": "sounds/lamadeipeligni/biophony/dalmatian-woodpecker.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Valley Edge - Eurasian Blackcap",
+    "lat": 42.0402,
+    "lng": 14.1841,
+    "category": "biophony",
+    "description": "Eurasian blackcap song at valley edge",
+    "audioUrl": "sounds/lamadeipeligni/biophony/eurasian-blackcap.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Lower Valley Trail - Eurasian Treecreeper",
+    "lat": 42.0372,
+    "lng": 14.1877,
+    "category": "biophony",
+    "description": "Eurasian treecreeper vocalizations on valley trails",
+    "audioUrl": "sounds/lamadeipeligni/biophony/eurasian-treecreeper.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Forest Exit East - European Robin",
+    "lat": 42.0378,
+    "lng": 14.1896,
+    "category": "biophony",
+    "description": "European robin singing at eastern forest exit",
+    "audioUrl": "sounds/lamadeipeligni/biophony/european-robin.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Eastern Access Path - Goldcrest",
+    "lat": 42.0390,
+    "lng": 14.1910,
+    "category": "biophony",
+    "description": "Goldcrest high-frequency calls on eastern path",
+    "audioUrl": "sounds/lamadeipeligni/biophony/goldcrest.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Chamois Sanctuary Lower - Golden Eagle",
+    "lat": 42.0470,
+    "lng": 14.1860,
+    "category": "biophony",
+    "description": "Golden eagle vocalizations over lower sanctuary",
+    "audioUrl": "sounds/lamadeipeligni/biophony/golden-eagle.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Chamois Observation Point - Great Tit",
+    "lat": 42.0478,
+    "lng": 14.1848,
+    "category": "biophony",
+    "description": "Great tit calls at wildlife observation point",
+    "audioUrl": "sounds/lamadeipeligni/biophony/great-tit.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Chamois Sanctuary Inner - HiFi Soundscape",
+    "lat": 42.0485,
+    "lng": 14.1878,
+    "category": "biophony",
+    "description": "High-fidelity forest soundscape in sanctuary core",
+    "audioUrl": "sounds/lamadeipeligni/biophony/hifi-soundscape-lama.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Upper Sanctuary Clearing - House Martin",
+    "lat": 42.0465,
+    "lng": 14.1905,
+    "category": "biophony",
+    "description": "House martin chirps in upper clearing",
+    "audioUrl": "sounds/lamadeipeligni/biophony/house-martin.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Lower Convent Access - Peregrine Falcon",
+    "lat": 42.0410,
+    "lng": 14.1850,
+    "category": "biophony",
+    "description": "Peregrine falcon vocalizations near historic convent",
+    "audioUrl": "sounds/lamadeipeligni/biophony/peregrine-falcon.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Convent Courtyard - Red Deer Roaring",
+    "lat": 42.0432,
+    "lng": 14.1845,
+    "category": "biophony",
+    "description": "Red deer roaring near convent courtyard",
+    "audioUrl": "sounds/lamadeipeligni/biophony/red-deer-roaring.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Convent Viewpoint - River Forest Binaural",
+    "lat": 42.0440,
+    "lng": 14.1865,
+    "category": "geophony",
+    "description": "Binaural river and forest ambience from viewpoint",
+    "audioUrl": "sounds/lamadeipeligni/biophony/river-forest-binaural.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "River Soundscape Point - Tree Frogs River",
+    "lat": 42.0385,
+    "lng": 14.1859,
+    "category": "geophony",
+    "description": "Tree frogs chorus by river",
+    "audioUrl": "sounds/lamadeipeligni/biophony/tree-frogs-river.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Mijares Riverbank West",
+    "lat": 39.9409,
+    "lng": -0.0738,
+    "category": "geophony",
+    "description": "River soundscape on western Mijares bank",
+    "audioUrl": "sounds/almazora/geophony/mijares-riverbank.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Mijares River Crossing",
+    "lat": 39.9424,
+    "lng": -0.0679,
+    "category": "geophony",
+    "description": "River ambience at crossing point",
+    "audioUrl": "sounds/almazora/geophony/mijares-crossing.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Santa Quiteria Hermitage",
+    "lat": 39.9386,
+    "lng": -0.0625,
+    "category": "anthropophony",
+    "description": "Historical hermitage with ambient soundscape",
+    "audioUrl": "sounds/almazora/anthropophony/santa-quiteria.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Plaza Mayor Almazora",
+    "lat": 39.9476,
+    "lng": -0.0647,
+    "category": "anthropophony",
+    "description": "Main plaza urban ambience and activity",
+    "audioUrl": "sounds/almazora/anthropophony/plaza-mayor.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Parc Darremur",
+    "lat": 39.9489,
+    "lng": -0.0609,
+    "category": "biophony",
+    "description": "Urban park with birds and vegetation",
+    "audioUrl": "sounds/almazora/biophony/parc-darremur.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Parc del Pitillo",
+    "lat": 39.9458,
+    "lng": -0.0588,
+    "category": "biophony",
+    "description": "Park soundscape with natural wildlife",
+    "audioUrl": "sounds/almazora/biophony/parc-pitillo.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Urban Garden Area",
+    "lat": 39.9442,
+    "lng": -0.0661,
+    "category": "anthropophony",
+    "description": "Urban garden with mixed sounds",
+    "audioUrl": "sounds/almazora/anthropophony/urban-garden.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Almazora Beach Promenade",
+    "lat": 39.9256,
+    "lng": -0.0499,
+    "category": "geophony",
+    "description": "Mediterranean beach waves and coastal atmosphere",
+    "audioUrl": "sounds/almazora/geophony/beach-promenade.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Ben Afeli Beach",
+    "lat": 39.9228,
+    "lng": -0.0472,
+    "category": "geophony",
+    "description": "Coastal beach soundscape with sea ambience",
+    "audioUrl": "sounds/almazora/geophony/ben-afeli.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  },
+  {
+    "title": "Coastal Dunes Area",
+    "lat": 39.9281,
+    "lng": -0.0518,
+    "category": "geophony",
+    "description": "Dune landscape with wind and coastal sounds",
+    "audioUrl": "sounds/almazora/geophony/coastal-dunes.mp3",
+    "imageUrl": "images/placeholder.jpg"
+  }
+]
