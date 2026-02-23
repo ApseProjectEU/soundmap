@@ -474,6 +474,12 @@
   <h2>APSE Sound Map</h2>
   <p>Interactive Soundscape Explorer</p>
 
+  <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 12px; padding: 16px; margin-bottom: 16px; text-align: center;">
+    <div style="font-family: 'Poppins', sans-serif; font-size: 36px; font-weight: 800; color: #22c55e; line-height: 1; margin-bottom: 4px;" id="total-count">–</div>
+    <div style="font-size: 11px; color: #94a3b8; letter-spacing: 1.5px; text-transform: uppercase;">Sound Recordings</div>
+    <div style="font-size: 10px; color: #64748b; margin-top: 4px;">Across 3 European Countries</div>
+  </div>
+
   <div class="instructions">
     • Click markers to listen<br>
     • Use filters to show/hide categories<br>
@@ -704,11 +710,19 @@ const colors = {
 /* AGGIUNGI MARKERS */
 function addMarkers() {
   const bounds = [];
+  const clusterCounts = {};
 
   for (const place in soundData) {
     const location = soundData[place];
     const baseLat = location.base[0];
     const baseLng = location.base[1];
+    
+    // Conta totale suoni per location
+    let totalSounds = 0;
+    for (const category in location.sounds) {
+      totalSounds += location.sounds[category].length;
+    }
+    clusterCounts[place] = totalSounds;
 
     for (const category in location.sounds) {
       location.sounds[category].forEach(filename => {
@@ -754,6 +768,84 @@ function addMarkers() {
       padding: [80, 80],
       maxZoom: 6  // Limita zoom per vista panoramica Europa
     });
+  }
+
+  // Anima contatore totale marker
+  const totalEl = document.getElementById('total-count');
+  if (totalEl) {
+    let count = 0;
+    const target = bounds.length;
+    const duration = 1500;
+    const increment = target / (duration / 16);
+    
+    const counter = setInterval(() => {
+      count += increment;
+      if (count >= target) {
+        totalEl.textContent = target;
+        clearInterval(counter);
+      } else {
+        totalEl.textContent = Math.floor(count);
+      }
+    }, 16);
+  }
+
+  // BADGE CLUSTER - mostrano numero totale per località
+  const clusterBadges = {
+    lamadeipeligni: { coords: [42.083, 14.183], name: 'Lama dei Peligni', count: clusterCounts.lamadeipeligni },
+    larissa: { coords: [39.639, 22.419], name: 'Larissa', count: clusterCounts.larissa },
+    almazora: { coords: [39.938, -0.065], name: 'Almazora', count: clusterCounts.almazora }
+  };
+
+  for (const key in clusterBadges) {
+    const cluster = clusterBadges[key];
+    const clusterIcon = L.divIcon({
+      className: 'cluster-badge',
+      html: `
+        <div style="
+          background: linear-gradient(135deg, rgba(34, 197, 94, 0.95), rgba(45, 158, 96, 0.95));
+          border: 2px solid rgba(255, 255, 255, 0.9);
+          border-radius: 50%;
+          width: 56px;
+          height: 56px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          box-shadow: 0 4px 20px rgba(34, 197, 94, 0.5), 0 0 30px rgba(34, 197, 94, 0.3);
+          cursor: pointer;
+          transition: all 0.3s;
+        " onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">
+          <div style="font-size: 20px; font-weight: 800; color: #fff; line-height: 1;">${cluster.count}</div>
+          <div style="font-size: 7px; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px;">sounds</div>
+        </div>
+      `,
+      iconSize: [56, 56],
+      iconAnchor: [28, 28]
+    });
+
+    const clusterMarker = L.marker(cluster.coords, { icon: clusterIcon });
+    clusterMarker.bindPopup(`
+      <div style="text-align: center; padding: 8px;">
+        <div style="font-size: 16px; font-weight: 700; color: #22c55e; margin-bottom: 4px;">${cluster.name}</div>
+        <div style="font-size: 13px; color: #94a3b8;">${cluster.count} soundscape recordings</div>
+        <div style="font-size: 11px; color: #64748b; margin-top: 6px;">Zoom in to explore individual sounds</div>
+      </div>
+    `);
+
+    // Mostra badge solo a zoom basso, nascondi a zoom alto
+    map.on('zoomend', function() {
+      const zoom = map.getZoom();
+      if (zoom <= 7) {
+        if (!map.hasLayer(clusterMarker)) map.addLayer(clusterMarker);
+      } else {
+        if (map.hasLayer(clusterMarker)) map.removeLayer(clusterMarker);
+      }
+    });
+
+    // Aggiungi subito se zoom iniziale è basso
+    if (map.getZoom() <= 7) {
+      clusterMarker.addTo(map);
+    }
   }
 }
 
